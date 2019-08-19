@@ -1,0 +1,14 @@
+extends layout.pug
+
+block content 
+  article.grid-container.portfolio-intro
+    div
+      h1 Error Message
+      h5 #{error.message}
+      
+      h1 Error Status
+      h5 #{error.status}
+
+      h1 Error Stack
+      p.lead.text-light
+        | #{error.stack}

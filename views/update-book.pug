@@ -1,0 +1,35 @@
+extends layout.pug
+
+block title
+  title Update Book
+
+block content 
+  div
+    h1 Update Book
+    if errors
+      h2.error Oooops!
+      ul.error
+        each errorMesg in errors
+          li= errorMesg.msg
+    form(method='POST' action='/books/' + id)
+      p
+        label(for='title') Title
+        input(name='title' type='text' id='title' value=(undefined===title ? '' : title))
+      p
+        label(for='author') Author
+        input(name='author' type='text' id='author' value=(undefined===author ? '' : author))
+      p
+        label(for='genre') Genre
+        input(name='genre' type='text' id='genre' value=(undefined===genre ? '' : genre))
+      p
+        label(for='year') Year
+        input(name='year' type='text' id='year' value=(undefined===year ? '' : year))
+      p
+        input(value='Update Book' type='submit')
+
+    form(method='POST' action=('/books/' + id + '/delete') onsubmit="return confirm('Do you really want to delete this book?');")
+      p
+        a.button.expanded(href="/books") Cancel
+      p
+        input(value='Delete Book' type='submit')
+      

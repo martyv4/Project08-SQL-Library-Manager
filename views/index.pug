@@ -1,0 +1,27 @@
+extends layout.pug
+
+block title
+  title Books
+
+block content 
+  div
+    h1 Books
+    p
+      a.button.expanded(href="/books/new") Create New Book
+    p
+      a.button.expanded(href="/search") Search Books
+    table
+      thead
+        tr
+          th Title
+          th Author
+          th Genre
+          th Year
+      tbody
+        each book in bookList
+          tr
+            td 
+              a(href="/books/" + book.id)= book.title
+            td= book.author
+            td= book.genre
+            td= book.year
