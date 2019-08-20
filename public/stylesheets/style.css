@@ -95,3 +95,29 @@ input[type=text] {
 .error {
   color: rgb(236, 15, 15);
 }
+
+ul.paginateLinks {
+  
+}
+
+.pageLink {
+  float: left;
+  padding: 10px;
+  margin: 5px;
+  background: #019875;
+  
+  border-radius: 2px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.pageLink a{
+  color: white;
+}
+.pageLink span {
+  color: grey;
+}
+
+.pageLink a:hover {
+  color: black;
+}

@@ -16,6 +16,8 @@ const { check, validationResult } = require('express-validator');
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const itemsPerPage = 10;
+
 //const db = require('./models'); //typical way to get Sequelize DB object
 //using app.set instead as per:
 //https://www.redotheweb.com/2013/02/20/sequelize-the-javascript-orm-in-practice.html
@@ -35,22 +37,41 @@ app.get('/', (req, res, next) => {
 app.get('/books', (req, res, next) => {
   try
   {
+      //https://stackoverflow.com/questions/47800245/node-pagination-with-express
+      let page = parseInt(req.query.page);
+      if (!page) {  //if page == null
+        page = 1;
+      }
+      
+      const offset = (page-1) * itemsPerPage;
       const Book = app.get('models').Book;
-      Book.findAll({
+
+      const getBooksOffset = Book.findAll({
           order: [
               ['author', 'ASC'],
               ['title', 'ASC'],
-          ]
-      })
-      .then((queryReturn) => {
+          ],
+          limit: itemsPerPage, 
+          offset: offset
+      });
+
+      const getTotalBooks = Book.count();
+
+      Promise
+      .all([getBooksOffset, getTotalBooks])
+      .then((responses) => {
+          const queryOffsetList = responses[0];
+          const pageCount = Math.ceil(responses[1] / itemsPerPage);
           res.render("index", {
-              bookList: queryReturn,
+              bookList: queryOffsetList,
+              page: page,
+              pageCount: pageCount
           });
       });
       
   }
   catch (e) {
-      next(new Error('Request could not be fulfilled'));
+      next(new Error(e));
   }
 });
 
@@ -201,14 +222,14 @@ try
           ]
       })
       .then((queryReturn) => {
-          res.render("index", {
+          res.render("search-results", {
               bookList: queryReturn,
           });
       });
   
 }
 catch (e) {
-  next(new Error(e));
+  next(new Error('Request could not be fulfilled'));
 }
 });
 

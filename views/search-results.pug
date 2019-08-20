@@ -1,11 +1,11 @@
 extends layout.pug
 
 block title
-  title Books
+  title Search Results
 
 block content 
   div
-    h1 Books
+    h1 Search Results
     p
       a.button.expanded(href="/books/new") Create New Book
     p
@@ -25,17 +25,3 @@ block content
             td= book.author
             td= book.genre
             td= book.year
-  ul.paginateLinks
-    if (page != 1)
-      li.pageLink
-        a(href='/books/?page=' + (page-1)) Prev
-    - for (let i=1; i<= pageCount; i++)
-        li.pageLink
-          if (i == page)
-            span
-              =i
-          else
-            a(href='/books/?page=' + i)= i
-    if (page != pageCount)
-      li.pageLink
-        a(href='/books/?page=' + (page+1)) Next
