@@ -16,5 +16,14 @@
     "sequelize": "^5.15.1",
     "sequelize-cli": "^5.5.0",
     "sqlite3": "^4.1.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/martyv4/newExpressPugNode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/martyv4/newExpressPugNode/issues"
+  },
+  "homepage": "https://github.com/martyv4/newExpressPugNode#readme"
 }
