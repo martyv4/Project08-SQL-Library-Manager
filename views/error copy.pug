@@ -1,8 +1,16 @@
 extends layout.pug
 
+block title
+  title Error Page
+
 block content 
+  h1 Error Page
+  
+  h2.error Oooops!
+
   article.grid-container.portfolio-intro
     div
+      img(src="/static/images/page-not-found.jpg" alt="page-not-found.jpg" width="600" height="400")
       h1 Error Message
       h5 #{error.message}
       
@@ -12,3 +20,4 @@ block content
       h1 Error Stack
       p.lead.text-light
         | #{error.stack}
+        

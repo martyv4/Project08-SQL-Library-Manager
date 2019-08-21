@@ -37,14 +37,13 @@ app.get('/', (req, res, next) => {
 app.get('/books', (req, res, next) => {
   try
   {
-      next(new Error('Request could not be fulfilled'));
-
-      //https://stackoverflow.com/questions/47800245/node-pagination-with-express
-      let page = parseInt(req.query.page);
+  //next(new Error('Request could not be fulfilled'));
+     let page = parseInt(req.query.page);
       if (!page) {  //if page == null
         page = 1;
-      }
-      
+
+    }
+
       const offset = (page-1) * itemsPerPage;
       const Book = app.get('models').Book;
 
@@ -119,6 +118,7 @@ catch (e) {
 }
 });
 
+//primary key https://sequelize.org/master/class/lib/model.js~Model.html#static-method-findByPk
 app.get('/books/:id', (req, res, next) => {
   try
   {
