@@ -1,8 +1,16 @@
 extends layout.pug
 
+block title
+  title Error Page
+
 block content 
+  h1 Error Page
+  
+  h2.error Oooops!
+
   article.grid-container.portfolio-intro
     div
+      img(src="/static/images/error.png" alt="error.png")
       h1 Error Message
       h5 #{error.message}
       

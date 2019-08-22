@@ -37,6 +37,7 @@ app.get('/', (req, res, next) => {
 app.get('/books', (req, res, next) => {
   try
   {
+  //for testing purposes - go to error page on load
   //next(new Error('Request could not be fulfilled'));
      let page = parseInt(req.query.page);
       if (!page) {  //if page == null
