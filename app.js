@@ -1,29 +1,55 @@
-//Express
+/*
+    1) First step is to establish the express application
+        require means include (we are drawing it from somewhere else)
+        https://expressjs.com/en/4x/api.html#res.send
+        http://localhost:3000
+  
+    2) 
+        https://stackoverflow.com/questions/12703098/how-to-get-a-json-file-in-express-js-and-display-in-view
+        https://expressjs.com/en/guide/using-middleware.html
+        PUG:  https://teamtreehouse.com/library/middleware-in-context
+
+        definition:  next:  https://stackoverflow.com/questions/10695629/what-is-the-parameter-next-used-for-in-express
+
+            http://expressjs.com/en/starter/static-files.html
+*/
+// Step 1 create an express app
 const express = require('express');
 const app = express();
 
-//Pug
+//specify Pug as the view engine for the app
 const path = require('path');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-//Mapping public folder as route '/static'
+//This is middleware to access the public folder via route /static
 app.use('/static', express.static(path.join(__dirname, 'public')))
 app.get('/favicon.ico', (req, res) => res.redirect('/static/favicon.ico'));
 
+//https://express-validator.github.io/docs/
+//https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/forms
+//https://stackoverflow.com/questions/50767728/no-errors-with-express-validator-isempty
+//https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/forms/Create_genre_form
 const { check, validationResult } = require('express-validator');
 
+//https://www.tutorialspoint.com/expressjs/expressjs_form_data.htm
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 
+//Extra Credit:  Pagination - each page has 10 items (Books)
 const itemsPerPage = 10;
 
 //const db = require('./models'); //typical way to get Sequelize DB object
 //using app.set instead as per:
 //https://www.redotheweb.com/2013/02/20/sequelize-the-javascript-orm-in-practice.html
 app.set('models', require('./models'));
+
+//Import Sequelize module to use Sequelize.Op in search action and lets us chain together logical statements
 const Sequelize = require('sequelize');
 
+// 1st Route:  Define route for main page at /  (GET - retrieve information)
+//Define Home Page: redirect to '/books'
+//If there is a runtime error go to the error page
 app.get('/', (req, res, next) => {
   try
   {
@@ -34,20 +60,30 @@ app.get('/', (req, res, next) => {
   }
 });
 
+// 2nd Route:  Define route for 'list' which list all the books for this page
+//             Action for books - index.pug view
 app.get('/books', (req, res, next) => {
   try
   {
   //for testing purposes - go to error page on load
   //next(new Error('Request could not be fulfilled'));
+
+     //Extra Credit: http://localhost:3000/books/?page=2
+     //https://coursework.vschool.io/express-params-and-query/
+     //Query string passes parameters to the application request 
+     //Accessible using req.query
      let page = parseInt(req.query.page);
-      if (!page) {  //if page == null
-        page = 1;
+      if (!page) {  //if page is not defined == null
+        page = 1;   //set it to page 1 if no page is in the query string
 
-    }
-
+    }   
+      //Calculates offset based on the page number 
+      //https://www.rubydoc.info/github/jeremyevans/sequel/Sequel%2FDataset:limit
       const offset = (page-1) * itemsPerPage;
+      //This is the model of the book
       const Book = app.get('models').Book;
 
+      //https://sequelize.org/master/manual/querying.html
       const getBooksOffset = Book.findAll({
           order: [
               ['author', 'ASC'],
@@ -56,9 +92,13 @@ app.get('/books', (req, res, next) => {
           limit: itemsPerPage, 
           offset: offset
       });
+      //SELECT * FROM Books ORDER BY author ASC, title ASC OFFSET [offset] LIMIT [itemsPerPage]
 
+      //SELECT COUNT(*) FROM Books
       const getTotalBooks = Book.count();
 
+      //https://stackoverflow.com/questions/48376479/executing-multiple-sequelize-js-model-query-methods-with-promises-node
+      //the eventual value or result of a asynchronous operation
       Promise
       .all([getBooksOffset, getTotalBooks])
       .then((responses) => {
@@ -73,10 +113,12 @@ app.get('/books', (req, res, next) => {
       
   }
   catch (e) {
-      next(new Error(e));
+      next(new Error('Request could not be fulfilled'));
   }
 });
 
+// 3rd Route:  Define route for 'new' 
+//             GET action for books - new-book.pug view
 app.get('/books/new', (req, res, next) => {
   try
   {
@@ -87,6 +129,11 @@ app.get('/books/new', (req, res, next) => {
   }
 });
 
+// 4th Route:  Define route for 'new' 
+//             POST action for books - ? view
+//https://lorenstewart.me/2016/10/03/sequelize-crud-101/
+//https://stackoverflow.com/questions/9304888/how-to-get-data-passed-from-a-form-in-express-node-js
+//
 app.post('/books/new', [
   check('title', 'Name is required').not().isEmpty(),
   check('author', 'Author is required').not().isEmpty()
@@ -119,6 +166,8 @@ catch (e) {
 }
 });
 
+// 5th Route:  Define route for 'show' 
+//             url parameter book for ID :id - update-book.pug view
 //primary key https://sequelize.org/master/class/lib/model.js~Model.html#static-method-findByPk
 app.get('/books/:id', (req, res, next) => {
   try
@@ -172,6 +221,8 @@ app.post('/books/:id',  [
   }
 });
 
+// 7th Route:  Define route for 'delete' 
+//             book for ID :id - ? view
 app.post('/books/:id/delete', (req, res, next) => {
   try
   {
@@ -253,7 +304,9 @@ app.use((err, req, res, next) => {
     }
   });
 
-//Host
+//specify port 3000 as the application location at localhost
 const portNumber = 3000;
+//initiate the app on port 3000
 app.listen(portNumber);
+//log that the application is ready for requests
 console.log("App started on localhost at port " + portNumber);

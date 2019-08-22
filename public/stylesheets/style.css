@@ -1,10 +1,11 @@
 body {
   padding: 10px 50px 50px;
   font: 18px "Garamond", serif;
+  background color: black
 }
 
 a {
-  color: #019875;
+  color: #0625af;
   text-decoration: none;
   font-weight: bold;
   transition: 0.4s;
@@ -34,7 +35,7 @@ input[type=submit] {
 }
 
   a.button:hover, input[type=submit]:hover {
-    background-color: #01b189;
+    background-color: #021813;
   }
 
 p {
@@ -48,10 +49,37 @@ ul {
   line-height: 1.3em;
 }
 
-h2 {
+h1
+{
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(11, 2, 26, 0.9);
+  font-family: Satisfy, cursive;
+  font-weight:normal;
+  color: rgb(116, 40, 5);
+  border-radius: 0.35em;
+  text-shadow: 0 1px 0 #ccc,
+                  0 2px 0 #c9c9c9,
+                  0 3px 0 #bbb,
+                  0 4px 0 #b9b9b9,
+                  0 5px 0 #aaa,
+                  0 6px 1px rgba(0,0,0,.1),
+                  0 0 5px rgba(0,0,0,.1),
+                  0 1px 3px rgba(0,0,0,.3),
+                  0 3px 5px rgba(0,0,0,.2),
+                  0 5px 10px rgba(0,0,0,.25),
+                  0 10px 10px rgba(0,0,0,.2),
+                  0 20px 20px rgba(0,0,0,.15);  
+}
+
+h2,h3,h4,h5{
+  font-family: Satisfy, cursive;
+  color: rgb(116, 40, 5);
+  border-radius: 0.35em;
   border-top: 2px solid #e7e7e7;
   padding-top: 20px;
 }
+
 
 th {
   border-bottom: 2px solid #D8B493;
@@ -120,4 +148,19 @@ ul.paginateLinks {
 
 .pageLink a:hover {
   color: black;
+}
+.button:hover{
+  background-color: #111;
+}
+.btn-container .btn {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 0.85em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+  padding: 0.75em 1.5em;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 0.35em;
+  transition: .4s ease-out;
+  outline: none;
 }
