@@ -8,18 +8,20 @@ block content
     h1 Search For Books
     
     form(method='POST' action='/search')
-      p
-        label(for='title') Title
-        input(name='title' type='text' id='title' )
-      p
-        label(for='author') Author
-        input(name='author' type='text' id='author' )
-      p
-        label(for='genre') Genre
-        input(name='genre' type='text' id='genre' )
-      p
-        label(for='year') Year
-        input(name='year' type='text' id='year' )
-      p
-        input(value='Search Books' type='submit')
-      a.button.expanded(href="/books") Cancel
+      div.formbox
+        div.forminnerbox
+          p
+            label(for='title') Title
+            input(name='title' type='text' id='title' )
+          p
+            label(for='author') Author
+            input(name='author' type='text' id='author' )
+          p
+            label(for='genre') Genre
+            input(name='genre' type='text' id='genre' )
+          p
+            label(for='year') Year
+            input(name='year' type='text' id='year' )
+          p
+            input(value='Search Books' type='submit')
+          a.button.expanded(href="/books") Cancel

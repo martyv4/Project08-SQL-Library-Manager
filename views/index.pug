@@ -6,10 +6,10 @@ block title
 block content 
   div
     h1 Books
-    p
-      a.button.expanded(href="/books/new") Create New Book
-    p
-      a.button.expanded(href="/search") Search Books
+    div.homelinkmargin
+      a.button.expanded.homelink(href="/books/new") Create New Book
+    div.homelinkmargin
+      a.button.expanded.homelink(href="/search") Search Books
     table
       thead
         tr
@@ -30,11 +30,11 @@ block content
       li.pageLink
         a(href='/books/?page=' + (page-1)) Prev
     - for (let i=1; i<= pageCount; i++)
-        li.pageLink
-          if (i == page)
-            span
-              =i
-          else
+        if (i == page)
+          li.pageLink.activePage
+            =i
+        else
+          li.pageLink
             a(href='/books/?page=' + i)= i
     if (page != pageCount)
       li.pageLink

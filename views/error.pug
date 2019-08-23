@@ -5,18 +5,21 @@ block title
 
 block content 
   h1 Error Page
-  
-  h2.error Oooops!
-
-  article.grid-container.portfolio-intro
-    div
-      img(src="/static/images/error.png" alt="error.png")
-      h1 Error Message
-      h5 #{error.message}
+  p
+    a.button.expanded(href="/books") Back to List
+  div.errorbox
+    div.forminnerbox
+      h2.error Oooops!
       
-      h1 Error Status
-      h5 #{error.status}
+      article.grid-container.portfolio-intro
+        div
+          img(src="/static/images/error.png" alt="error.png")
+          h1 Error Message
+          h5 #{error.message}
+          
+          h1 Error Status
+          h5 #{error.status}
 
-      h1 Error Stack
-      p.lead.text-light
-        | #{error.stack}
+          h1 Error Stack
+          p.lead.text-light
+            | #{error.stack}

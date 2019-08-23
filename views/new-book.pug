@@ -7,23 +7,27 @@ block content
   div
     h1 New Book
     if errors
-      h2.error Oooops!
-      ul.error
-        each errorMesg in errors
-          li= errorMesg.msg
+      div.formbox
+        div.forminnerbox
+          h2.error Input Validation Failed
+          ul.error
+            each errorMesg in errors
+              li= errorMesg.msg
     form(method='POST' action='/books/new')
-      p
-        label(for='title') Title
-        input(name='title' type='text' id='title' value=(undefined===title ? '' : title))
-      p
-        label(for='author') Author
-        input(name='author' type='text' id='author' value=(undefined===author ? '' : author))
-      p
-        label(for='genre') Genre
-        input(name='genre' type='text' id='genre' value=(undefined===genre ? '' : genre))
-      p
-        label(for='year') Year
-        input(name='year' type='text' id='year' value=(undefined===year ? '' : year))
-      p
-        input(value='Create New Book' type='submit')
-      a.button.expanded(href="/books") Cancel
+      div.formbox
+        div.forminnerbox
+          p
+            label(for='title') Title
+            input(name='title' type='text' id='title' value=(undefined===title ? '' : title))
+          p
+            label(for='author') Author
+            input(name='author' type='text' id='author' value=(undefined===author ? '' : author))
+          p
+            label(for='genre') Genre
+            input(name='genre' type='text' id='genre' value=(undefined===genre ? '' : genre))
+          p
+            label(for='year') Year
+            input(name='year' type='text' id='year' value=(undefined===year ? '' : year))
+          p
+            input(value='Create New Book' type='submit')
+          a.button.expanded(href="/books") Cancel

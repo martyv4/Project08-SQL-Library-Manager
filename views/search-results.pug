@@ -6,22 +6,29 @@ block title
 block content 
   div
     h1 Search Results
-    p
-      a.button.expanded(href="/books/new") Create New Book
-    p
-      a.button.expanded(href="/search") Search Books
-    table
-      thead
-        tr
-          th Title
-          th Author
-          th Genre
-          th Year
-      tbody
-        each book in bookList
+    div.homelinkmargin
+      a.button.expanded.homelink(href="/books/new") Create New Book
+    div.homelinkmargin
+      a.button.expanded.homelink(href="/search") Search Books
+    if bookList.length == 0
+      div.formbox
+        div.forminnerbox
+          |No Results Found!
+    else
+      table
+        thead
           tr
-            td 
-              a(href="/books/" + book.id)= book.title
-            td= book.author
-            td= book.genre
-            td= book.year
+            th Title
+            th Author
+            th Genre
+            th Year
+        tbody
+          each book in bookList
+            tr
+              td 
+                a(href="/books/" + book.id)= book.title
+              td= book.author
+              td= book.genre
+              td= book.year
+    p
+      a.button.expanded(href="/books") Back to List
