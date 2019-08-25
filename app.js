@@ -3,6 +3,7 @@
         require means include (we are drawing it from somewhere else)
         https://expressjs.com/en/4x/api.html#res.send
         http://localhost:3000
+        https://youtu.be/sB3acNJeNKE
   
     2) 
         https://stackoverflow.com/questions/12703098/how-to-get-a-json-file-in-express-js-and-display-in-view
@@ -11,7 +12,8 @@
 
         definition:  next:  https://stackoverflow.com/questions/10695629/what-is-the-parameter-next-used-for-in-express
 
-            http://expressjs.com/en/starter/static-files.html
+            http://expressjs.com/en/starter/static-files.html  
+
 */
 // Step 1 create an express app
 const express = require('express');
