@@ -1,4 +1,4 @@
-var express = require('express');
+/* var express = require('express');
 var app = require('express')();
 
 app.set('views', __dirname + '/views');
@@ -11,4 +11,4 @@ app.get('/', function (req, res) {
 
 app.listen(5000, function () {
   console.log('listening on *:5000');
-});
+}); */
