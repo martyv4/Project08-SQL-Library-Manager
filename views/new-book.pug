@@ -12,22 +12,22 @@ block content
           h2.error Input Validation Failed
           ul.error
             each errorMesg in errors
-              li= errorMesg.msg
+              li= errorMesg.message
     form(method='POST' action='/books/new')
       div.formbox
         div.forminnerbox
           p
             label(for='title') Title
-            input(name='title' type='text' id='title' value=(undefined===title ? '' : title))
+            input(name='title' type='text' id='title' value=(undefined===book ? '' : book.title))
           p
             label(for='author') Author
-            input(name='author' type='text' id='author' value=(undefined===author ? '' : author))
+            input(name='author' type='text' id='author' value=(undefined===book ? '' : book.author))
           p
             label(for='genre') Genre
-            input(name='genre' type='text' id='genre' value=(undefined===genre ? '' : genre))
+            input(name='genre' type='text' id='genre' value=(undefined===book ? '' : book.genre))
           p
             label(for='year') Year
-            input(name='year' type='text' id='year' value=(undefined===year ? '' : year))
+            input(name='year' type='text' id='year' value=(undefined===book ? '' : book.year))
           p
             input(value='Create New Book' type='submit')
           a.button.expanded(href="/books") Cancel

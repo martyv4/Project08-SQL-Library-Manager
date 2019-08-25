@@ -30,7 +30,9 @@ app.get('/favicon.ico', (req, res) => res.redirect('/static/favicon.ico'));
 //https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/forms
 //https://stackoverflow.com/questions/50767728/no-errors-with-express-validator-isempty
 //https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/forms/Create_genre_form
-const { check, validationResult } = require('express-validator');
+
+//YM 8-24-2019 remove express-validator from use; rely on Sequelizer input validator instead.
+//const { check, validationResult } = require('express-validator');
 
 //https://www.tutorialspoint.com/expressjs/expressjs_form_data.htm
 const bodyParser = require('body-parser');
@@ -109,8 +111,11 @@ app.get('/books', (req, res, next) => {
               page: page,
               pageCount: pageCount
           });
+      })
+      //YM 8-24-2019 Give promise section its own catch() to handle errors generated within
+      .catch((err) => {
+        res.send(500)
       });
-      
   }
   catch (e) {
       next(new Error('Request could not be fulfilled'));
@@ -134,14 +139,21 @@ app.get('/books/new', (req, res, next) => {
 //https://lorenstewart.me/2016/10/03/sequelize-crud-101/
 //https://stackoverflow.com/questions/9304888/how-to-get-data-passed-from-a-form-in-express-node-js
 //
+
+//YM 8-24-2019: disable page validators, use Sequelize validators instead
+/*
 app.post('/books/new', [
   check('title', 'Name is required').not().isEmpty(),
   check('author', 'Author is required').not().isEmpty()
 ], (req, res, next) => {
+  */
+app.post('/books/new', (req, res, next) => {
 try
 {
-  const errors = validationResult(req);
-
+  //YM 8-24-2019 disable page validators, use Sequelize validators instead
+  //const errors = validationResult(req);
+  
+  /*
   if (!errors.isEmpty())
   {
       return res.render('new-book', { errors: errors.array(), title: req.body.title,
@@ -149,17 +161,35 @@ try
   }
   else
   {
-      const Book = app.get('models').Book;
-      Book.create({
-          title: req.body.title,
-          author: req.body.author,
-          genre: req.body.genre,
-          year: req.body.year
-      })
-      .then(() => {
-          res.redirect('/books');
+    */
+  const Book = app.get('models').Book;
+  Book.create({
+      title: req.body.title,
+      author: req.body.author,
+      genre: req.body.genre,
+      year: req.body.year
+  })
+  .then(() => {
+      res.redirect('/books');
+  })
+  //YM 8-24-2019 Give promise section its own catch() to handle errors generated within
+  //YM 8-24-2019 If Sequelize error, render the new-book page again, else fall into next .catch(err) - throw err;
+  .catch((err) => {
+    if (err.name === "SequelizeValidationError") {
+      res.render("new-book", {
+        book: Book.build(req.body),
+        errors: err.errors
       });
-  }
+    }
+    else
+    {
+      throw err;
+    }
+  })
+  .catch((err) => {
+    res.send(500)
+  });
+  //}
 }
 catch (e) {
   next(new Error('Request could not be fulfilled'));
@@ -174,8 +204,19 @@ app.get('/books/:id', (req, res, next) => {
   {
       const Book = app.get('models').Book;
       Book.findByPk(req.params.id).then((foundBook) => {
-          res.render("update-book", { id: foundBook.id, title: foundBook.title,
-              author: foundBook.author, genre: foundBook.genre, year: foundBook.year });
+          if (foundBook)
+          {
+            res.render("update-book", { id: foundBook.id, book: foundBook });
+          }
+          else
+          {
+            //YM 8-24-2019 render our 404 if the book at :id is not in the database
+            res.render('page-not-found');
+          }
+      })
+      //YM 8-24-2019 Give promise section its own catch() to handle errors generated within
+      .catch((err) => {
+        res.send(500)
       });
   }
   catch (e) {
@@ -185,12 +226,18 @@ app.get('/books/:id', (req, res, next) => {
 
 // 6th Route:  Define route for 'update' (POST - send information)
 //             book for ID :id - ? view
+
+//YM 8-24-2019 use Sequelize validators instead of express-validator
+/*
 app.post('/books/:id',  [
-      check('title', 'Name is required').not().isEmpty(),
-      check('author', 'Author is required').not().isEmpty()
-  ], (req, res, next) => {
+  check('title', 'Name is required').not().isEmpty(),
+  check('author', 'Author is required').not().isEmpty()
+], (req, res, next) => {
+  */
+app.post('/books/:id', (req, res, next) => {
   try
   {
+    /*
       const errors = validationResult(req);
 
       if (!errors.isEmpty())
@@ -200,21 +247,40 @@ app.post('/books/:id',  [
       }
       else
       {
-          const Book = app.get('models').Book;
+        */
+    const Book = app.get('models').Book;
 
-          Book.update({
-              title: req.body.title,
-              author: req.body.author,
-              genre: req.body.genre,
-              year: req.body.year
-              },
-              {where: {id: req.params.id}
-              }
-          )
-          .then(() => {
-              res.redirect('/books');
-          });
+    Book.update({
+        title: req.body.title,
+        author: req.body.author,
+        genre: req.body.genre,
+        year: req.body.year
+        },
+        {where: {id: req.params.id}
+        }
+    )
+    .then(() => {
+        res.redirect('/books');
+    })
+    //YM 8-24-2019 Give promise section its own catch() to handle errors generated within
+    //YM 8-24-2019 If Sequelize error, render the update-book page again, else fall into next .catch(err) - throw err;
+    .catch((err) => {
+      if (err.name === "SequelizeValidationError") {
+        res.render("update-book", {
+          id: req.params.id,
+          book: Book.build(req.body),
+          errors: err.errors
+        });
       }
+      else
+      {
+        throw err;
+      }
+    })
+    .catch((err) => {
+      res.send(500)
+    });
+  //    }
   }
   catch (e) {
       next(new Error('Request could not be fulfilled'));
@@ -227,10 +293,29 @@ app.post('/books/:id/delete', (req, res, next) => {
   try
   {
       const Book = app.get('models').Book;
-      Book.destroy({
-          where: {id: req.params.id}
-      }).then(() => {
-          res.redirect('/books');
+
+      Book.findByPk(req.params.id).then((foundBook) => {
+        if (foundBook)
+        {
+          Book.destroy({
+            where: {id: req.params.id}
+          }).then(() => {
+            res.redirect('/books');
+          })
+          //YM 8-24-2019 Give promise section its own catch() to handle errors generated within
+          .catch((err) => {
+            res.send(500)
+          });
+        }
+        else
+        {
+          //YM 8-24-2019 Render our 404 if the book with this :id was not found
+          res.render('page-not-found');
+        }
+      })
+      //YM 8-24-2019 Give promise section its own catch() to handle errors generated within
+      .catch((err) => {
+        res.send(500)
       });
   }
   catch (e) {
@@ -257,6 +342,7 @@ try
         where: {
           [Op.and]: {
             title: {
+              //YM 8-24-2019 Op.like already case-insensitive
               [Op.like]: '%' + req.body.title + '%'
             },
             author: {
@@ -279,6 +365,10 @@ try
           res.render("search-results", {
               bookList: queryReturn,
           });
+      })
+      //YM 8-24-2019 Give promise section its own catch() to handle errors generated within
+      .catch((err) => {
+        res.send(500)
       });
   
 }
