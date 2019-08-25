@@ -1,42 +1,42 @@
-/*
-    1) First step is to establish the express application
-        require means include (we are drawing it from somewhere else)
-        https://expressjs.com/en/4x/api.html#res.send
-        http://localhost:3000
-        https://youtu.be/sB3acNJeNKE
+/*YM 8-24-2019
+    First step is to establish the express application
+      require means include (we are drawing it from somewhere else)
+      https://expressjs.com/en/4x/api.html#res.send
+      http://localhost:3000
+      https://youtu.be/sB3acNJeNKE
   
-    2) 
-        https://stackoverflow.com/questions/12703098/how-to-get-a-json-file-in-express-js-and-display-in-view
-        https://expressjs.com/en/guide/using-middleware.html
-        PUG:  https://teamtreehouse.com/library/middleware-in-context
+    Specify Pug as the view engine for the app
+      PUG:  https://teamtreehouse.com/library/middleware-in-context
+      https://stackoverflow.com/questions/12703098/how-to-get-a-json-file-in-express-js-and-display-in-view
+      Middleware: https://expressjs.com/en/guide/using-middleware.html
+      Next definition: https://stackoverflow.com/questions/10695629/what-is-the-parameter-next-used-for-in-express
+      
+      a)  This is middleware to access the public folder via route /static
+          Public folder via route /static: http://expressjs.com/en/starter/static-files.html  
 
-        definition:  next:  https://stackoverflow.com/questions/10695629/what-is-the-parameter-next-used-for-in-express
-
-            http://expressjs.com/en/starter/static-files.html  
-
+    Remove express-validator from use; rely on Sequelizer input validator instead.
+      express-validator installation: https://express-validator.github.io/docs/
+      https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/forms
+      https://stackoverflow.com/questions/50767728/no-errors-with-express-validator-isempty /https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/forms/Create_genre_form
+      const { check, validationResult } = require('express-validator');
+      
+      Parse application - https://www.tutorialspoint.com/expressjs/expressjs_form_data.htm
 */
-// Step 1 create an express app
+
+//1) create an express app
 const express = require('express');
 const app = express();
 
-//specify Pug as the view engine for the app
+//2) specify Pug as the view engine for the app
 const path = require('path');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-//This is middleware to access the public folder via route /static
+//2a) Set Public folder via route /static
 app.use('/static', express.static(path.join(__dirname, 'public')))
 app.get('/favicon.ico', (req, res) => res.redirect('/static/favicon.ico'));
 
-//https://express-validator.github.io/docs/
-//https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/forms
-//https://stackoverflow.com/questions/50767728/no-errors-with-express-validator-isempty
-//https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/forms/Create_genre_form
-
-//YM 8-24-2019 remove express-validator from use; rely on Sequelizer input validator instead.
-//const { check, validationResult } = require('express-validator');
-
-//https://www.tutorialspoint.com/expressjs/expressjs_form_data.htm
+//3) body-parser
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -152,18 +152,11 @@ app.post('/books/new', [
 app.post('/books/new', (req, res, next) => {
 try
 {
-  //YM 8-24-2019 disable page validators, use Sequelize validators instead
-  //const errors = validationResult(req);
   
-  /*
-  if (!errors.isEmpty())
-  {
-      return res.render('new-book', { errors: errors.array(), title: req.body.title,
-          author: req.body.author, genre: req.body.genre, year: req.body.year })
-  }
-  else
-  {
-    */
+/* Sequelize validator
+    - Give promise section its own catch() to handle errors generated within
+    - If Sequelize error, render the new-book page again, else fall into next .catch(err) - throw err; 
+*/
   const Book = app.get('models').Book;
   Book.create({
       title: req.body.title,
@@ -174,8 +167,6 @@ try
   .then(() => {
       res.redirect('/books');
   })
-  //YM 8-24-2019 Give promise section its own catch() to handle errors generated within
-  //YM 8-24-2019 If Sequelize error, render the new-book page again, else fall into next .catch(err) - throw err;
   .catch((err) => {
     if (err.name === "SequelizeValidationError") {
       res.render("new-book", {
@@ -191,7 +182,6 @@ try
   .catch((err) => {
     res.send(500)
   });
-  //}
 }
 catch (e) {
   next(new Error('Request could not be fulfilled'));
