@@ -381,7 +381,7 @@ app.use((err, req, res, next) => {
 });
 
 //specify port 3000 as the application location at localhost
-const portNumber = 3000;
+const portNumber = 3001;
 //initiate the app on port 3000
 app.listen(portNumber);
 //log showing application is ready for requests
